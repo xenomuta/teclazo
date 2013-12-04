@@ -1,6 +1,8 @@
 #include <node.h>
 #include <v8.h>
 
+#include <stdio.h>
+#include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
