@@ -32,7 +32,7 @@ describe('Teclazo', function () {
       var kpms = teclazo.humanKeysPerMS;
       var lastKeyTime = Date.now();
       var callback = function (data) {
-        key = data.toString('utf8');
+        var key = data.toString('utf8');
         process.stdout.write(key);
         if (key === '\r') {
           stdin.removeListener('data', callback);
