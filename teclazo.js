@@ -1,7 +1,5 @@
-/*
-*Teclazo* (**keystorke in spanish**)
-Sends key strokes to current tty
-*/
+// ### **Teclazo** (_keystorke in spanish_)
+// _Sends key strokes to current tty_
 var teclazo = require('./build/Release/teclazo');
 
 // Send a keystroke
@@ -16,14 +14,17 @@ Teclazo.sendCtrlC = function () {
 
 // Simulate a human with delayed keys
 Teclazo.human = function (string) {
+  // Must have at least one byte
   if (!string || !string.length) return;
+  // Split string in characters
   var tasks = string.split('').map(function (key) {
     return function () {
-      // console.log(this);
+      // Send it...
       Teclazo(key);
       setTimeout(function () {
         var fn = tasks.shift();
         if (typeof(fn) === 'function') fn();
+      // Use random delays to mimic a human-being.
       }, Teclazo.humanKeysPerMS + Math.round(Math.random() * 100));
     };
   });
