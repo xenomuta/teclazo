@@ -1,6 +1,6 @@
 {
   "name": "teclazo",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Sends keystroke to current terminal",
   "main": "teclazo.js",
   "gypfile": true,
