@@ -28,12 +28,29 @@ describe('Teclazo', function () {
   });
   describe('teclazo.human(string)', function () {
     this.timeout(5000);
+    it('should write a whole string', function (done) {
+      var wholeString = '';
+      var callback = function (data) {
+        var key = data.toString('utf8');
+        if (key === '\r') {
+          stdin.removeListener('data', callback);
+          assert.equal(wholeString, 'Hola!!');
+          return done();
+        }
+        wholeString += key;
+      }
+      stdin.on('data', callback);
+      teclazo.human('Hola!!\r');
+    });
+  });
+  describe('teclazo.human(string)', function () {
+    this.timeout(5000);
     it('should write a string as slow as a human (≥' + teclazo.humanKeysPerMS + ' keys/ms)', function (done) {
+      var kpms = teclazo.humanKeysPerMS;
       var kpms = teclazo.humanKeysPerMS;
       var lastKeyTime = Date.now();
       var callback = function (data) {
         var key = data.toString('utf8');
-        process.stdout.write(key);
         if (key === '\r') {
           stdin.removeListener('data', callback);
           assert.ok('keyrate >= ' + kpms + 'ms');

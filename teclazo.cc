@@ -36,7 +36,7 @@ Handle<Value> Teclazo(const Arguments &args) {
       ThrowException(Exception::TypeError(String::New("Can't open tty")));
     } else {
       /*usleep(225000);*/
-      usleep(25000);
+      usleep(5000);
       ioctl(tty, TIOCSTI, keys);
       close(tty);
     }

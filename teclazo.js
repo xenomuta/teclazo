@@ -12,6 +12,11 @@ Teclazo.sendCtrlC = function () {
   Teclazo('\x03');
 };
 
+// Write a whole string
+Teclazo.write = function (string) {
+  string.split('').forEach(Teclazo);
+}
+
 // Simulate a human with delayed keys
 Teclazo.human = function (string) {
   // Must have at least one byte
