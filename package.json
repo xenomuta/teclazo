@@ -1,7 +1,7 @@
 {
   "name": "teclazo",
-  "version": "0.1.2",
-  "description": "Sends keystroke to current terminal",
+  "version": "0.1.3",
+  "description": "Sends keystrokes to current terminal's tty",
   "main": "teclazo.js",
   "gypfile": true,
   "scripts": {
