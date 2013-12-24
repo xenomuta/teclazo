@@ -26,21 +26,16 @@ describe('Teclazo', function () {
       teclazo.sendCtrlC();
     });
   });
-  describe('teclazo.human(string)', function () {
+  describe('teclazo.write(string)', function () {
     this.timeout(5000);
     it('should write a whole string', function (done) {
-      var wholeString = '';
       var callback = function (data) {
-        var key = data.toString('utf8');
-        if (key === '\r') {
-          stdin.removeListener('data', callback);
-          assert.equal(wholeString, 'Hola!!');
-          return done();
-        }
-        wholeString += key;
+        stdin.removeListener('data', callback);
+        assert.equal(data.toString(), 'Hola!!\r');
+        return done();
       }
       stdin.on('data', callback);
-      teclazo.human('Hola!!\r');
+      teclazo.write('Hola!!\r');
     });
   });
   describe('teclazo.human(string)', function () {
