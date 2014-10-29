@@ -1,23 +1,32 @@
 // ### **Teclazo** (_keystorke in spanish_)
 // _Sends key strokes to current tty_
 var teclazo = require('./build/Release/teclazo');
+var __tty;
 
-// Send a keystroke
+// `Teclazo(key)` sends a keystroke
 var Teclazo = function (key) {
-  teclazo(key);
+  teclazo.write(key, __tty);
 };
 
-// Send the `Ctrl+C` sequence
+// `.tty([newTTY])` gets or sets target tty
+Teclazo.tty = function (newTTY) {
+  if (newTTY || !__tty) {
+    __tty = newTTY || teclazo.tty();
+  }
+  return newTTY ? Teclazo : __tty;
+};
+
+// `.sendCtrlC()` sends the `Ctrl+C` sequence
 Teclazo.sendCtrlC = function () {
   Teclazo('\x03');
 };
 
-// Write a whole string
+// `.write(string)` writes a whole string
 Teclazo.write = function (string) {
   string.split('').forEach(Teclazo);
 }
 
-// Simulate a human with delayed keys
+// `.human()` types with a simulated human's latency
 Teclazo.human = function (string) {
   // Must have at least one byte
   if (!string || !string.length) return;
@@ -36,7 +45,7 @@ Teclazo.human = function (string) {
   tasks.shift()();
 };
 
-// Average human keystrokes per milliseconds
+// `humanKeysPerMS` An integer for average human keystrokes per milliseconds
 Teclazo.humanKeysPerMS = 50;
 
 // Export it!

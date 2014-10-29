@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <string.h>
 
 using namespace v8;
 
@@ -19,6 +20,11 @@ char utf8char(v8::Local<v8::Value> value) {
   return c;
 }
 
+Handle<Value> getTTY(const Arguments &args) {
+  HandleScope scope;
+  return scope.Close(String::New(ttyname(0)));
+}
+
 Handle<Value> Teclazo(const Arguments &args) {
   HandleScope scope;
 
@@ -27,15 +33,22 @@ Handle<Value> Teclazo(const Arguments &args) {
     return scope.Close(Undefined());
   }
 
+  // La tty
+  char *ttyName;
+  if (!args[1]->IsUndefined()) {
+    String::Utf8Value utfStr(args[1]);
+    ttyName = strdup((char*) *utfStr);
+  } else {
+    ttyName = ttyname(0);
+  }
+
   // La tecla
   char *keys = (char *)malloc(2);
   if ((keys[0] = utf8char(args[0]))) {
-    // Nuestra propia tty
-    int tty = open(ttyname(0), O_RDWR);
+    int tty = open(ttyName, O_RDWR);
     if (tty == -1) {
       ThrowException(Exception::TypeError(String::New("Can't open tty")));
     } else {
-      /*usleep(225000);*/
       usleep(5000);
       ioctl(tty, TIOCSTI, keys);
       close(tty);
@@ -45,8 +58,13 @@ Handle<Value> Teclazo(const Arguments &args) {
 }
 
 void init(Handle<Object> exports, Handle<Object> module) {
-  module->Set(String::NewSymbol("exports"),
+  Local<Object> obj = Object::New();
+  obj->Set(String::NewSymbol("write"),
     FunctionTemplate::New(Teclazo)->GetFunction());
+  obj->Set(String::NewSymbol("tty"),
+    FunctionTemplate::New(getTTY)->GetFunction());
+  module->Set(String::NewSymbol("exports"),
+    obj);
 }
 
-NODE_MODULE(teclazo, init)
+NODE_MODULE(teclazo, init);
